@@ -1,7 +1,7 @@
 #----------------------------------------
-# Filename:  extract_tokens.py
-# To run:    python3 extract_tokens.py <infile>
-# e.g:       python3 extract_tokens.py input.txt > output.txt
+# Filename:  invertedfile.py
+# To run:    python3 invertedfile.py <indir> <outdir>
+# e.g:       python3 extract_tokens.py ../input/ output/
 #----------------------------------------
 
 import os.path
@@ -10,7 +10,7 @@ import sys
 import glob
 import collections
 from ply.lex import TOKEN
-from timeit import default_timer
+import time, timeit
 import subprocess
 
 # list of TOKENS (required)
@@ -31,8 +31,6 @@ tokens =[
     'CHAR_NUM',
 ]
 DIGITS  = r'[0-9]+'
-# # Regular expression for the HTML special characters
-# t_HTML = r'&lt;|&gt;'
 
 def MyLexer():
     # Special case 
@@ -179,12 +177,11 @@ if __name__ == '__main__':
         print("Path not valid \n Enter valid path ")
         quit()
 
-    # to ensure files are ordered by name   
+    # sort files by name (optional)
     sort_files_command = f"ls {inputDir} | cut -d. -f1 | sort -V"
     result = subprocess.run(sort_files_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     if result.returncode == 0:
         sorted_files = result.stdout.split('\n')
-        # sorted_files = [file for file in sorted_files if file.strip()]
     else:
         print("Error:", result.stderr)
     list_of_files = [os.path.join(inputDir, file + ".html") for file in sorted_files if file.strip()]
@@ -193,7 +190,7 @@ if __name__ == '__main__':
     globaldict = collections.defaultdict(list)
     corpora_size = 0
     number_of_file = 1750
-    start = default_timer()
+    start = timeit.default_timer()
     f = open(os.path.join(outputDir, MAPPFILE), 'w') # write to mapping file
     f.write("DOCID \t FREQUENCY")
     for i, file_name in enumerate(list_of_files[:number_of_file]):
@@ -211,9 +208,7 @@ if __name__ == '__main__':
         start += num_docs
         output_dict[k] = (num_docs, start)
         f.write("\n{}\t{}\t{}".format(k, num_docs, start))
-    print(globaldict.get("function"))
-    my_list = list(globaldict.keys())
-    print(my_list[0])
+
     # write to post file
     f = open(os.path.join(outputDir, POSTFILE), 'w')
     f.write("DOCID \t FREQUENCY")
@@ -221,4 +216,4 @@ if __name__ == '__main__':
         for doc_id, freq in v:
             f.write("\n{} \t {}".format(doc_id, freq))
     f.close()
-    print('Time run for {} files: {}'.format(number_of_file, default_timer() - start))
+    print('Time run for {} files: {}'.format(number_of_file, timeit.default_timer() - start))

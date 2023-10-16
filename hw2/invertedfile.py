@@ -14,12 +14,13 @@ import time, timeit
 import subprocess
 from typing import NamedTuple, Tuple, List
 import atexit
+import re
 
 POSTFILE = "post_file.txt"
 DICTFILE = "dict_file.txt"
 MAPPFILE = "mapping_file.txt"
 EMPTYSTR = "_empty"
-KEYS = 500
+KEYS = 75
 
 class StringIntPair(NamedTuple):
     key: str
@@ -77,118 +78,57 @@ class HashTable:
         return index
     
 # list of TOKENS (required)
-tokens =[
-    'EMAIL',
-    'URL',
-    'HTML',
-    'PHD',
-    'PHONE_NUMBER',
-    'WHITESPACE',
-    'DOWNCASE',
-    'REMOVE_COMMENT',
-    'REMOVE_HTML_TAG',
-    'COLOR',
-    'PIXEL',
-    'NUMBER',
-    'NUMBER2',
-    'CHAR_NUM',
-]
-DIGITS  = r'[0-9]+'
+tokens = ['CSS',
+          'HTMLENTITY',
+          'HTMLTAG',
+          'HTMLCOMMENT',
+          'HYPERLINK',
+          'NUMBER',
+          'EMAIL',
+          'WORD']
 
 def MyLexer():
-    # Special case 
-    def t_PHD(t):
-        r'Ph\.D\.'
-        t.value = 'phd'
-        return t
-    
-    # Email
-    def t_EMAIL(t):
-        r'\S+@\S+'
-        t.value = 'zzzemail'
-        return t
-    
-    # URL
-    def t_URL(t):
-        r'(?:(?:https?://|www\.)\S+|\b\w+\.\w+\b)'
-        t.value = 'zzzurl'
-        return t
-    
-    # Handle the HTML special characters
-    def t_HTML(t):
-        r'&lt;|&gt;'
-        if t.value == '&lt;':
-            t.value = 'zzzlessthan'
-        elif t.value == '&gt;':
-            t.value = 'zzzgreaterthan'
-        return t
-    
-    # Match phone number (e.g., 123-456-7890)
-    # an replace the matched phone number with 'zzzphonenumber'
-    def t_PHONE_NUMBER(t):
-        r'\d{3}-\d{3}-\d{4}'  
-        t.value = 'zzzphonenumber'  
-        return t
-    
-    # Match number formatted as 1,000,000 to 'zzznumber'
-    def t_NUMBER2(t):
-        r'\d+[,\d+]+'
-        t.value = "zzznumber"
-        return t
-    
-    # Match number to 'zzznumber'
-    # Must be defined after rules that also contains digits
-    @TOKEN(DIGITS)
-    def t_NUMBER(t):
-        t.value = "zzznumber"
-        return t
+    def t_CSS(t):
+        r'([\S^,]*,\s*)*\S+\s*{[^}]+}'
 
-    # Regular expression rule to match and discard /* ... */ comments
-    def t_REMOVE_COMMENT(t):
-        r'/\*.*?\*/'
-        pass
+    # Remove html special tokens, such as &gt; &amp;
+    def t_HTMLENTITY(t):
+        r'\&\w+'
 
-    # This rule captures and discards anything enclosed in angle brackets
-    # i.e. remove content in HTML tags
-    def t_REMOVE_HTML_TAG(t):
+    def t_HTMLTAG(t):
         r'<[^>]+>'
-        pass
-    
-    # Replace [digits]px to 'zzzpixel' 
-    def t_PIXEL(t):
-        r'\d+px'
-        t.value = 'zzzpixel'
-        return t
-    
-    # Downcase
-    def t_DOWNCASE(t):
-        r'[A-Za-z]+'
+
+    def t_HTMLCOMMENT(t):
+        r'/\*.*?\*/'
+
+    # Remove the https, www part, keep the name of url
+    def t_HYPERLINK(t):
+        r'(htt(p|ps):\/\/|www.)[^\s<\/]+'
         t.value = t.value.lower()
+        t.value = re.sub(r'(https://|http://|www\.)', '', t.value)
+        return t
+
+    def t_NUMBER(t):
+        r'[1-9](\d|,|\.|-)*'
+        t.value = re.sub('(,|-|\.\S*)', '', t.value)
+        return t
+
+    # Keep email unchange
+    def t_EMAIL(t):
+        r'\S+@\S+\.[^<\s,?!.\xa0\x85]+'
+        # t.value = re.sub('(@.*|<[^>]+>)', '', t.value)
+        return t
+
+    def t_WORD(t):
+        r'[A-z](\w|\'|-|\.\w|<[^>]+>)*'
+        t.value = t.value.lower()
+        t.value = re.sub('(\.|-|\'|<[^>]+>)', '', t.value)
         return t
     
-    # Match remaining strings that contain both characters and digits to 'zzzcharnum'
-    # Must define after t_PIXEL()
-    def t_CHAR_NUM(t):
-        r'[a-zA-Z0-9]+'
-        t.value = 'zzzcharnum'
-        return t
-    
-    # Replace color code (e.g. #333, #FFF)to 'zzzcolor'
-    def t_COLOR(t):
-        r'\#[0-9A-Za-z]+'
-        t.value = 'zzzcolor'
-        return t
-    
-    # Regular expression rule to match and discard whitespace characters
-    def t_WHITESPACE(t):
-        r'\n\t\s+ '
-        pass
-    
+    t_ignore  = ' []+$|=%*{}/0-"#>();:!?.,\t\xa0\x85\xe2\x00'
+
     def t_error(t):
         t.lexer.skip(1)
-
-    # Ignore whitespace
-    # t_ignore = ''
 
     return lex.lex()
 
@@ -278,6 +218,6 @@ if __name__ == '__main__':
             for doc_id, freq in v:
                 f.write("\n{} \t {}".format(doc_id, freq))
     f.close()
-    print(globaldict.hash("commensurate"))
+    # print(globaldict.hash("commensurate"))
     print('Time run for {} files: {}'.format(number_of_file, time.process_time() - time_start))
-
+    print(corpora_size)

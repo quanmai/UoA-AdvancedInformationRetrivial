@@ -1,0 +1,112 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+    margin: 0;
+}
+
+h1 {
+    margin-top: 50px;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+label {
+    margin-bottom: 10px;
+}
+
+input[type="text"] {
+    padding: 10px;
+    margin-bottom: 20px;
+    width: 300px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+input[type="submit"] {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+h3 {
+    margin-top: 20px;
+}
+
+h4 {
+    margin-bottom: 5px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    margin: 5px 0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+li:hover {
+    background-color: #f0f0f0;
+}
+
+/* Additional styles for the content display box */
+#contentDisplay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 500px;
+    height: 100%;
+    background-color: #f8f8f8;
+    border-left: 1px solid #ddd;
+    padding: 10px;
+    box-shadow: -5px 0 5px -5px rgba(0, 0, 0, 0.5);
+    display: none;
+    font-size: 9px;
+    overflow: auto;
+}
+
+footer {
+    padding: 10px;
+    text-align: center;
+    margin-top: auto; /* Push the footer to the bottom */
+}
+
+nav a {
+    /*color: white;*/
+    margin-top: 10px;
+    text-decoration: none;
+    padding: 10px;
+    transition: background-color 0.3s;
+}
+
+nav a i {
+    margin-right: 5px;
+}
+nav a:hover {
+    background-color: #F0FFFF;
+}
+a img {
+    margin-top: 50px;
+    width: 100px; /* Adjust the width as needed */
+    height: 100px; /* Adjust the height as needed */
+    margin-right: 5px;
+}

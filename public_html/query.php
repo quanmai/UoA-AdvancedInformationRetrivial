@@ -23,6 +23,13 @@
     </a>
 
     <h1>Mini Search Engine</h1>
+    <div class="center-container">
+        <p class="styled-paragraph">Support stemming
+            <br>
+            Phrase retrieval is not supported
+        </p>
+    </div>
+    <h4></h4>
     <!-- Search form -->
     <form method="post" action="">
         <label for="query">Enter your query:</label>
@@ -33,22 +40,35 @@
     <?php
         // Handle the form submission
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $query = $_POST["query"];
+            $query = escapeshellarg($_POST["query"]);
             $command = "python3 query.py $query";
             $output = shell_exec($command);
             if (!empty($output)) {
-                echo "<h3>Top 10 results:</h3>";
+                // echo "<h3>Top 10 results:</h3>";
+                // echo '<p class="show-result">Results for: ' .$query. "</h3>";
+                echo '<p class="show-result">Results for: <em>' . $query . '</em></p>';
                 echo '<ul id="resultList">';
+                echo '<table class="resultTable">';
                 $results = explode("\n", $output);
                 foreach ($results as $item) {
-                    echo '<li title="Hover to view content" class="fileItem" data-filename="' . $item . '">';
-                    echo '<a href="./files/' . $item . '">' . $item . '</a>';
-                    echo '</li>';
-                    
-                }
+                    if (!empty($item)) {
+                    $tw = explode(" ", $item);
+                    echo '<tr>';
+                    echo '<td>';
+                    echo '<li title="Hover to view content" class="fileItem" data-filename="' . $tw[0] . '">';
+                    echo '<a href="./files/' . $tw[0] . '">' . $tw[0] . '</a>';
+                    echo '</td>';
+                    echo '<td>';
+                    echo '<a class="tw-element">' . $tw[1] . '</a>';
+                    echo '</td>';
+                    echo '</tr>';
+                }}
+                echo "</table>";
                 echo "</ul>";
             } else {
-                echo "<p>No results found.</p>";
+                echo '<div class="center-container">';
+                echo '<p class="no-result">No results found for <em>' . $query . '  </em><i class="fas fa-sad-cry"></i></p>';
+                echo '</div>';
             }
         }
     ?>
@@ -102,7 +122,6 @@
         Created & maintained by <strong>Quan Mai</strong>,
         with much help from <a rel="Website" href="https://chat.openai.com" target="_blank">ChatGPT</a>.
         Website content licensed <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a>.
-        <!--<p>&copy; Created by Quan Mai, thanks to ChatGPT and Internet</p>-->
     </footer>
 </body>
 

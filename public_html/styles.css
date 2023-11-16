@@ -10,7 +10,7 @@ body {
 
 h1 {
     margin-top: 50px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 form {
@@ -85,7 +85,7 @@ li:hover {
 }
 
 footer {
-    padding: 10px;
+    padding: 5px;
     text-align: center;
     margin-top: auto; /* Push the footer to the bottom */
 }
@@ -105,8 +105,77 @@ nav a:hover {
     background-color: #F0FFFF;
 }
 a img {
-    margin-top: 50px;
-    width: 100px; /* Adjust the width as needed */
-    height: 100px; /* Adjust the height as needed */
+    margin-top: 30px;
+    width: 90px; /* Adjust the width as needed */
+    height: 90px; /* Adjust the height as needed */
     margin-right: 5px;
+}
+
+.center-container {
+    text-align: center;
+}
+
+.styled-paragraph {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #0066cc;
+    /* Add more styles as needed */
+}
+
+
+.no-result {
+    margin-top: 20;
+    font-size: 20px;
+    line-height: 1.5;
+    color: #0066cc;
+    /* Add more styles as needed */
+}
+
+.bigbox {
+    text-align: center;
+    width: 60%; /* Adjust the width as needed */
+    padding: 10px;
+    border: 1px #ccc; /* Optional: Add a border for better visibility */
+    border-radius: 5px;
+}
+
+.tfidf {
+    margin-left: 20px;
+    color: #0066cc;
+    /* Add more styles as needed */
+}
+
+.show-result {
+    /* margin-left: 20px; */
+    color: #7a8997;
+    /* Add more styles as needed */
+}
+
+.tw-element {
+    display: flex; /* Use flexbox for alignment */
+    align-items: baseline; /* Align items along their baseline */
+}
+
+.resultTable {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.resultTable td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.tw-element {
+    display: inline-block;
+    margin-top: 5px; /* Adjust the margin as needed */
+}
+#resultList {
+    max-height: 300px; /* Adjust the height as needed */
+    overflow-y: auto;
+}
+@media screen and (max-width: 600px) {
+    /* Add styles for smaller screens */
+    /* For example, reduce font sizes or adjust margins */
 }
